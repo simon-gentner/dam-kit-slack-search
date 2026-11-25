@@ -91,6 +91,18 @@ The agent answers in the language of your question. It searches in that language
 2. Restart the agent (`dam agent restart slack-search`, or restart it in the web app).
 3. On its next session, the agent reports the new workspace and asks whether to add it. It installs the write block for it itself.
 
+## Updates
+
+Agents don't update on their own. When this repository has a newer version, the owner decides:
+
+```bash
+dam kit changes <agent>   # what the new version brings (commits and CHANGELOG.md)
+dam kit update <agent>    # take it: the agent applies it in a session of its own
+dam kit skip <agent>      # skip this version; the next one is offered again
+```
+
+During the update the agent replaces only the definition files. Everything under `~/work/` (your settings and history) stays as it is. If a version needs a new setting, the agent asks you for it. See [`CHANGELOG.md`](CHANGELOG.md) for what changed in each version.
+
 ## Troubleshooting
 
 | Symptom | Fix |
@@ -106,6 +118,7 @@ The agent answers in the language of your question. It searches in that language
 | File | Purpose |
 |---|---|
 | `kit.yaml` | Kit manifest for DAM |
+| `VERSION`, `CHANGELOG.md` | Installed version and what changed in each version |
 | `AGENTS.md` | The agent's operating manual |
 | `ONBOARDING.md` | Setup on first run |
 | `scripts/install.py` | Detects the Slack servers in `~/.mcp.json` and writes the deny list and hooks into `~/.claude/settings.json`. Runs at every session start. |
