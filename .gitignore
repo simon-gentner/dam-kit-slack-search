@@ -1,0 +1,16 @@
+# This repository lives in the agent's HOME (/home/agent), next to secrets and runtime
+# data (.ssh, .claude, .mcp.json, work/ ...). So ignore everything and re-include only
+# the definition files. Nothing under work/ is ever versioned.
+
+/*
+
+!/.gitignore
+!/AGENTS.md
+!/CLAUDE.md
+!/ONBOARDING.md
+!/README.md
+!/kit.yaml
+!/scripts/
+
+/work/
+.DS_Store

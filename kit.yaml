@@ -1,0 +1,51 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/dam-agents/dam-starter-kits/main/kit.schema.json
+#
+# This repository IS the kit: the platform reads this file, creates the agent,
+# copies the repository into $HOME and opens the first session on ONBOARDING.md.
+
+schemaVersion: v1
+id: slack-search
+name: Slack Search
+tagline: Ask your Slack in natural language, with sources, across all your workspaces.
+description: >-
+  A personal agent that searches and reads your Slack but never writes to it. You ask
+  a question in your private channel. It searches every connected workspace (e.g. your company
+  and a partner workspace), reads the matching threads, and answers in the language you asked
+  in, with a short summary and permalinks. You add more workspaces as additional Slack
+  connections. It acts as you in Slack: never share this agent and never bind it to a
+  shared channel. Anyone who wants to use it creates their own copy.
+category: knowledge
+icon: search
+
+# The definition is copied from this repository into $HOME.
+seed:
+  self: true
+  into: home
+
+# No `onboarding` field on purpose: the platform opens the first session with
+# "follow ONBOARDING.md" and keeps the checklist and the onboarding hold itself.
+
+connections:
+  - accepts: [slack]
+    required: true
+    note: >-
+      Your own Slack account (e.g. slack-account), read-only. The harness blocks the
+      write tools.
+  - accepts: [slack]
+    required: false
+    note: >-
+      Optional: another Slack workspace, e.g. partner.slack.com.
+      Create it with `dam connection connect slack --name slack-<workspace>` and pick
+      the workspace in the login dialog. You can also add it later.
+
+channels:
+  - type: slack
+    note: >-
+      A private channel with only you and the DAM bot. Ambient mode off. Never bind a
+      shared channel.
+
+# Slack goes through the credential gateway; the agent needs no other network access.
+egressPreset: none
+
+# The write block (scripts/install.py, scripts/slack-guard.sh) exists for Claude Code only.
+harnesses: [claude-code]

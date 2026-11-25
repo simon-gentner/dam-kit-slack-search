@@ -1,0 +1,42 @@
+# Every tool of the Slack MCP server (mcp.slack.com), classified.
+# Applies to EVERY Slack server of the agent, whatever the connection is called
+# (slack-account, slack-partner, slack, ...).
+#
+#   read  <tool>  allowed
+#   write <tool>  writes, reacts, creates or uploads: in the deny list (install.py)
+#                 AND blocked by slack-guard.sh
+#
+# slack-guard.sh blocks any tool missing here until it is classified.
+# When in doubt, a tool is `write`.
+
+read  slack_search_public
+read  slack_search_public_and_private
+read  slack_search_channels
+read  slack_search_users
+read  slack_search_emojis
+read  slack_read_channel
+read  slack_read_thread
+read  slack_read_canvas
+read  slack_read_file
+read  slack_read_user_profile
+read  slack_list_channel_members
+read  slack_get_reactions
+read  slack_list_user_channels
+read  slack_read_list
+read  slack_read_list_comments
+
+write slack_send_message
+write slack_send_message_draft
+write slack_schedule_message
+write slack_add_reaction
+write slack_create_canvas
+write slack_update_canvas
+write slack_create_conversation
+write slack_create_list
+write slack_update_list
+write slack_add_list_record
+write slack_add_list_comment
+write slack_update_list_comment
+write slack_update_list_record
+write slack_get_file_upload_url
+write slack_complete_file_upload

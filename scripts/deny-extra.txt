@@ -1,0 +1,3 @@
+# Additionally blocked tools (one per line). slack-search answers from Slack only.
+WebFetch
+WebSearch
