@@ -30,12 +30,13 @@ Say this **before any question**, in plain words:
 python3 ~/scripts/install.py
 ```
 
-The output lists `slack_servers`, the Slack connections of this agent. If the list is empty, the Slack connection is missing: ask the owner to create and grant one, and stop here.
+The output lists `slack_servers`, the Slack connections of this agent. If the list is empty, no Slack connection is granted. This agent cannot work without one: walk the owner through **Add a workspace** (below) and stop here until it is done.
 
-```bash
-dam connection connect slack --name slack-<workspace>
-dam connection grant <agent> --connection slack-<workspace>
-```
+**Are all workspaces connected?** Each Slack connection covers exactly **one** workspace. A channel in a workspace without its own connection is invisible to this agent, and searching for it ends in "not found". So, when the list is not empty, name the connected servers and ask with `AskUserQuestion`: *"Are all Slack workspaces you want me to cover connected?"*
+
+- **"Yes, that's all" (Recommended):** continue.
+- **"I need to add one":** walk through **Add a workspace** (below). A new connection reaches the agent only after a restart, so stop onboarding here and tell the owner: *after the restart, come back to this chat and write "continue".* Then start again at step 2; every step is safe to repeat.
+- **"I'm not sure":** explain how to tell: in Slack, the workspace switcher shows every workspace they are in, and a message link of a channel shows its workspace in the domain (`https://<workspace>.slack.com/archives/…`). A channel that later cannot be found is the typical sign of a missing connection.
 
 If the script reports "Not the Claude Code harness", tell the owner clearly that the write tools are **not** blocked, and recommend switching the agent to Claude Code.
 
@@ -132,12 +133,15 @@ Then call `mark_onboarding_complete` and summarize briefly:
 
 ## Add a workspace (any time)
 
-The owner creates and grants the connection:
+Guide the owner through these steps, with this agent's name filled in for `<agent>`:
 
-```bash
-dam connection connect slack --name slack-<workspace>
-dam connection grant <agent> --connection slack-<workspace>
-dam agent restart <agent>
-```
+1. **Find the workspace:** in Slack, open a channel of that workspace and copy a message link; the domain is the workspace (`https://<workspace>.slack.com/…`).
+2. **Create the connection:**
+   - Web app: Settings → Connections → **Add connection** → Apps → **Slack Account** → **New**. In Slack's login dialog, pick that workspace in the top-right corner.
+   - CLI: `dam connection connect slack --name slack-<workspace>`, and pick the workspace in the login dialog.
+3. **Grant it to this agent:** in the web app under the agent's connections, or `dam connection grant <agent> --connection slack-<workspace>`.
+4. **Restart the agent:** in the web app, or `dam agent restart <agent>`.
 
-In Slack's login dialog, they pick the right workspace in the top right. After that, the SessionStart hook reports the new server. Run step 4 for it, run step 6 for its private channels, add the row to `## workspaces` and confirm it in one sentence. The hook adds the write block for the new server itself. It takes effect from the next session, and `slack-guard.sh` blocks writes even before that.
+If Slack's login dialog does not offer the workspace, the DAM Slack app is not installed there; only that workspace's admins can add it.
+
+After the restart, the SessionStart hook reports the new server. Run step 4 for it, run step 6 for its private channels, add the row to `## workspaces` and confirm it in one sentence. Ask whether to look up any channels there again that were not found before. The hook installs the write block for the new server itself.

@@ -3,6 +3,11 @@
 All notable changes to this kit. The version in `VERSION` is the one installed on an agent.
 `dam kit changes <agent>` shows what an update brings; `dam kit update <agent>` takes it.
 
+## 0.3.2 (2026-11-25)
+
+- Onboarding now checks that every Slack workspace the owner wants covered has its own connection, and guides through adding one (web app or CLI, grant, restart, then continue onboarding). A channel in an unconnected workspace was reported as not found before.
+- "Add a workspace" is a step-by-step guide, including how to find a channel's workspace and what to do when Slack's login does not offer it.
+
 ## 0.3.1 (2026-11-25)
 
 - Fix: a channel named in chat ("never search #x") is now looked up on every connected workspace, and in the owner's own channel list with all pages when the name search finds nothing. Private channels and channels in a second workspace were reported as not found before.
