@@ -34,7 +34,17 @@ If a server returns an error (e.g. an expired login), continue with the others a
 
 - **DMs:** direct messages and group DMs, always. There is no setting for this.
 - **Your own channel** (`channel_id` in `CONFIG.md`): it holds only your earlier answers.
-- **`## excluded_channels`:** the private channels the owner picked during onboarding, one row per channel (`server`, `channel_id`, `name`). The owner can add or remove one in chat. Resolve a name with `slack_search_channels`, show name → ID → server for confirmation, then update the table.
+- **`## excluded_channels`:** the private channels the owner picked during onboarding, one row per channel (`server`, `channel_id`, `name`). The owner can add or remove one in chat: find it per [Finding a channel by name](#finding-a-channel-by-name), then update the table.
+
+## Finding a channel by name
+
+Use this every time a channel is named (onboarding, "add channel #x", "never search #x"). A `channel_not_found` from one server only means the channel is not in that workspace.
+
+1. `slack_search_channels` with the name (without `#`) on **every** server in `## workspaces`.
+2. No exact match: `slack_list_user_channels` on **every** server, following `cursor` until the last page, and match the name exactly (case-insensitive). This list includes the private channels the owner is a member of, which `slack_search_channels` may not return.
+3. The same name on two servers: ask which one is meant.
+4. Still nothing: say it was not found, name the servers you searched, and give the two usual causes: the owner is not a member, or the channel's workspace has no connection yet (ONBOARDING.md → "Add a workspace").
+5. Show name → ID → server and have it confirmed before you store it.
 
 ## Format
 
