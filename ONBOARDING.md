@@ -4,7 +4,9 @@ Sets up a new slack-search agent, **once per agent**. Every step is safe to repe
 
 Skip if `~/.slack-search-onboarded` exists. Then only [`AGENTS.md`](AGENTS.md) applies, unless the owner wants to **add a workspace** (below).
 
-Talk to the owner in the language they write in, a few questions per message, each with a suggestion they can accept.
+Talk to the owner in the language they write in.
+
+**Ask through the harness.** Every question with fixed answers (yes/no, a choice, a pick from a list) goes through the harness's question tool, `AskUserQuestion` on Claude Code: the web chat shows it as clickable options, with "Other" for free text. Put your suggestion first and mark it "(Recommended)". The tool takes up to 4 questions per call and 2–4 options per question; for longer lists, see the paging rule where a step needs it. Ask open questions (names, topics, URLs) as plain text. If the tool is unavailable or fails (e.g. in a Slack thread), ask the same thing as plain text with a numbered list.
 
 **Checklist first:** call `set_onboarding_checklist` with these steps and tick each one with `complete_onboarding_step`:
 
@@ -13,7 +15,8 @@ Talk to the owner in the language they write in, a few questions per message, ea
 3. `owner`: Owner confirmed
 4. `workspaces`: Slack workspaces recorded
 5. `channel`: Private channel checked
-6. `test`: Test search succeeded
+6. `exclusions`: Private channels to exclude picked
+7. `test`: Test search succeeded
 
 ## 1. The one rule (`rule`)
 
@@ -63,7 +66,23 @@ This agent belongs in **one** private channel with only the owner (and the DAM b
 
 Keep ambient mode off (`--no-ambient`): then every question starts a fresh session with the current definition.
 
-## 6. Write `~/work/CONFIG.md`
+## 6. Private channels to exclude (`exclusions`)
+
+Say first: *DMs and group DMs are never searched, and neither is this channel.*
+
+Then, for every server in `## workspaces`, list the owner's private channels with `slack_list_user_channels`: restrict it to private channels if the tool offers a type filter, otherwise keep only the private ones from the result, and follow the `cursor` until the list is complete. Leave out the agent's own channel and sort by name.
+
+Ask with `AskUserQuestion`, **multi-select**, one question per workspace: *"Which private channels in <workspace> should I never search?"*, each channel one option (label `#name`). Paging, because a question holds at most 4 options:
+
+- Up to 4 channels: one question with all of them. A question needs at least 2 options, so a single channel gets a second option "None".
+- More: split the workspace's list into pages of 4 (`<workspace> 1/3`, `2/3`, …), one question per page, up to 4 pages per call, then the next call. Before the first call, say how many channels and pages there are, and that "Other" accepts channel names typed in directly.
+- More than 40 private channels in total: instead of paging through everything, ask first (single choice) whether to page through all, or to type the names to exclude.
+
+Nothing selected on a page means nothing there is excluded. Read the full choice back as names and have it confirmed with one yes/no question. Each chosen channel becomes one row in `## excluded_channels`. Mention that channels can be added or removed later in chat ("never search #x", "search #x again").
+
+Fallback without the tool: a numbered list per workspace, and the owner replies with the numbers, e.g. "1, 2", or "none".
+
+## 7. Write `~/work/CONFIG.md`
 
 Exactly in this shape (values are examples):
 
@@ -81,15 +100,24 @@ Exactly in this shape (values are examples):
 | --- | --- | --- |
 | slack-account | Example Corp | https://example.enterprise.slack.com |
 | slack-partner | Partner Inc | https://example.enterprise.slack.com |
+
+## excluded_channels
+
+| server | channel_id | name |
+| --- | --- | --- |
+| slack-account | C0456EFGH | #proj-acme |
+| slack-account | C0789IJKL | #proj-zeta |
 ```
+
+If the owner picked none, keep the heading and the table header with no rows.
 
 Show the file to the owner.
 
-## 7. Test search (`test`)
+## 8. Test search (`test`)
 
 Ask the owner for a term they are sure to find in Slack, and answer the question once in full per [`AGENTS.md`](AGENTS.md), with sources from all workspaces.
 
-## 8. Finish
+## 9. Finish
 
 ```bash
 mkdir -p ~/work/state && date -u +%Y-%m-%dT%H:%M:%SZ > ~/.slack-search-onboarded
@@ -112,4 +140,4 @@ dam connection grant <agent> --connection slack-<workspace>
 dam agent restart <agent>
 ```
 
-In Slack's login dialog, they pick the right workspace in the top right. After that, the SessionStart hook reports the new server. Run step 4 for it, add the row to `## workspaces` and confirm it in one sentence. The hook adds the write block for the new server itself. It takes effect from the next session, and `slack-guard.sh` blocks writes even before that.
+In Slack's login dialog, they pick the right workspace in the top right. After that, the SessionStart hook reports the new server. Run step 4 for it, run step 6 for its private channels, add the row to `## workspaces` and confirm it in one sentence. The hook adds the write block for the new server itself. It takes effect from the next session, and `slack-guard.sh` blocks writes even before that.

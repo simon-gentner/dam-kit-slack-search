@@ -65,7 +65,8 @@ Open the agent's chat in the web app. The first session walks you through setup 
 3. reads your Slack profile and asks you to confirm it is you
 4. detects your workspaces and their permalink domains
 5. checks that the bound channel is private
-6. runs a test search with a term you choose
+6. lists your private channels and lets you pick the ones it should never search
+7. runs a test search with a term you choose
 
 Your settings land in `~/work/CONFIG.md` on the agent. Nothing personal goes into this repository.
 
@@ -77,6 +78,12 @@ In your private channel, mention the bot and ask, e.g.:
 > @DAM Wer hat zuletzt über das Release-Datum gesprochen?
 
 The agent answers in the language of your question. It searches in that language and in English, reads up to about 10 threads, and lists its sources with permalinks. If it finds nothing, it says which searches it ran and suggests a better phrasing.
+
+## What is never searched
+
+- **DMs and group DMs:** always excluded.
+- **The agent's own channel:** always excluded, so it never finds its own earlier answers.
+- **Private channels you pick:** during onboarding the agent lists your private channels and you pick the ones to exclude, e.g. project channels. Change the list any time in chat: "never search #proj-acme", "search #proj-acme again", "which channels are excluded?".
 
 ## Adding a workspace later
 
