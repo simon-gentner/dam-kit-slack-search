@@ -3,6 +3,11 @@
 All notable changes to this kit. The version in `VERSION` is the one installed on an agent.
 `dam kit changes <agent>` shows what an update brings; `dam kit update <agent>` takes it.
 
+## 0.3.3 (2026-11-25)
+
+- Fix: Claude Code's auto-mode classifier sometimes refused harmless Slack reads (seen with `slack_list_channel_members`). `install.py` now also puts every Slack **read** tool into `permissions.allow` for every connected workspace. Write tools stay denied and `slack-guard.sh` still checks every call. **On update:** run `python3 ~/scripts/install.py`; it takes effect from the next session.
+- The privacy check before a search falls back to `describe_channel_users` when `slack_list_channel_members` fails, and no search runs if neither check works. Before, a failed check did not stop the search.
+
 ## 0.3.2 (2026-11-25)
 
 - Onboarding now checks that every Slack workspace the owner wants covered has its own connection, and guides through adding one (web app or CLI, grant, restart, then continue onboarding). A channel in an unconnected workspace was reported as not found before.

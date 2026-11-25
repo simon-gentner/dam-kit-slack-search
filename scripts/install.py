@@ -8,7 +8,9 @@
 
 The Slack servers are read from ~/.mcp.json: every connection to mcp.slack.com counts,
 whatever its name. For each server, every `write` tool from slack-tools.txt goes into
-permissions.deny, plus the entries of deny-extra.txt (if present). This script's own
+permissions.deny, plus the entries of deny-extra.txt (if present), and every `read` tool
+goes into permissions.allow. The allow entries keep Claude Code's auto-mode classifier
+from refusing harmless reads (e.g. slack_list_channel_members) at random. This script's own
 entries from an earlier run are replaced; everyone else's stay. The hooks
 (PreToolUse -> slack-guard.sh, SessionStart -> this script) are added idempotently.
 Changes take effect from the next session; slack-guard.sh blocks every unclassified
@@ -62,6 +64,11 @@ def desired_deny(servers):
     return [f"mcp__{s}__{t}" for s in servers for t in writes] + extra_deny()
 
 
+def desired_allow(servers):
+    reads = tool_lines("read")
+    return [f"mcp__{s}__{t}" for s in servers for t in reads]
+
+
 def guard_cmd():
     return f"bash {SCRIPTS / 'slack-guard.sh'}"
 
@@ -70,11 +77,16 @@ def start_cmd():
     return f"python3 {SCRIPTS / 'install.py'} --session-start"
 
 
+def merge(current, owned_prev, new):
+    """Replace this script's own entries from an earlier run; keep everyone else's."""
+    return [x for x in current if x not in owned_prev and x not in new] + new
+
+
 def apply(settings, servers, owned_prev):
-    deny_new = desired_deny(servers)
+    deny_new, allow_new = desired_deny(servers), desired_allow(servers)
     perms = settings.setdefault("permissions", {})
-    keep = [d for d in perms.get("deny", []) if d not in owned_prev and d not in deny_new]
-    perms["deny"] = keep + deny_new
+    perms["deny"] = merge(perms.get("deny", []), owned_prev["deny"], deny_new)
+    perms["allow"] = merge(perms.get("allow", []), owned_prev["allow"], allow_new)
 
     hooks = settings.setdefault("hooks", {})
     pre = [h for h in hooks.get("PreToolUse", [])
@@ -87,7 +99,7 @@ def apply(settings, servers, owned_prev):
              if not any("install.py" in x.get("command", "") for x in h.get("hooks", []))]
     start.append({"hooks": [{"type": "command", "command": start_cmd(), "timeout": 20}]})
     hooks["SessionStart"] = start
-    return settings, deny_new
+    return settings, {"deny": deny_new, "allow": allow_new}
 
 
 def main():
@@ -104,7 +116,10 @@ def main():
     try:
         owned_prev = json.loads(owned_file.read_text())
     except (OSError, ValueError):
-        owned_prev = []
+        owned_prev = {}
+    if isinstance(owned_prev, list):  # format before 0.3.3: deny entries only
+        owned_prev = {"deny": owned_prev}
+    owned_prev = {"deny": owned_prev.get("deny", []), "allow": owned_prev.get("allow", [])}
     try:
         settings = json.loads(SETTINGS.read_text()) if SETTINGS.exists() and SETTINGS.stat().st_size else {}
     except ValueError:
@@ -112,7 +127,7 @@ def main():
         return 1
 
     before = json.dumps(settings, sort_keys=True)
-    new, deny_new = apply(json.loads(before), servers, owned_prev)
+    new, owned_new = apply(json.loads(before), servers, owned_prev)
     changed = json.dumps(new, sort_keys=True) != before
 
     if mode == "--check":
@@ -124,7 +139,7 @@ def main():
         tmp = SETTINGS.with_suffix(".tmp")
         tmp.write_text(json.dumps(new, indent=2, ensure_ascii=False) + "\n")
         tmp.replace(SETTINGS)
-    owned_file.write_text(json.dumps(deny_new))
+    owned_file.write_text(json.dumps(owned_new))
 
     config = CONFIG.read_text() if CONFIG.exists() else ""
     unknown = [s for s in servers if f"| {s} |" not in config and f"|{s}|" not in config]
@@ -141,7 +156,7 @@ def main():
         print(line)
         return 0
 
-    print(json.dumps({"kit": kit, "slack_servers": servers, "deny_entries": len(deny_new),
+    print(json.dumps({"kit": kit, "slack_servers": servers, "deny_entries": len(owned_new["deny"]), "allow_entries": len(owned_new["allow"]),
                       "changed": changed, "settings": str(SETTINGS),
                       "not_in_config": unknown}, ensure_ascii=False))
     return 0

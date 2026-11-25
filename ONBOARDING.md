@@ -60,7 +60,7 @@ A server with no hits or an error: show it to the owner and ask whether they wan
 
 ## 5. Private channel (`channel`)
 
-This agent belongs in **one** private channel with only the owner (and the DAM bot). Read the bound channels with `mcp__platform-outbound__describe_channel` (`channel: "slack"`) and check the members with `slack_list_channel_members`.
+This agent belongs in **one** private channel with only the owner (and the DAM bot). Read the bound channels with `mcp__platform-outbound__describe_channel` (`channel: "slack"`) and check the members with `slack_list_channel_members` (if that fails, `mcp__platform-outbound__describe_channel_users`).
 
 - No channel bound: ask the owner to create a private channel, invite the DAM bot and bind it: `/dam bind` in the channel, or agent → Channels → Add Slack channel in the web app, or `dam channel slack connect <agent> --channel-id <ID> --no-ambient`.
 - Members besides the owner and the bot: warn the owner and do not continue until the channel is private.
