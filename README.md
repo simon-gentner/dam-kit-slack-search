@@ -151,3 +151,7 @@ During the update the agent replaces only the definition files. Everything under
 | `scripts/deny-extra.txt` | Further blocked tools (WebFetch, WebSearch) |
 
 Everything you configure lives on the agent under `~/work/` and is never versioned.
+
+## License
+
+[Apache-2.0](LICENSE)
