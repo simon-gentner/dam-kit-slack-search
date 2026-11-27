@@ -119,7 +119,7 @@ Show the file to the owner.
 
 ## 8. Test search (`test`)
 
-Ask the owner for a term they are sure to find in Slack, and answer the question once in full per [`AGENTS.md`](AGENTS.md), with sources from all workspaces. Then save that answer to a file and run `bash ~/scripts/check-answer.sh <file>`. Fix every `ERROR:` line before you finish; the script is the same check you run on later answers.
+Ask the owner for a term they are sure to find in Slack, and answer the question once in full per [`AGENTS.md`](AGENTS.md), with sources from all workspaces. Then save that answer to `~/work/state/answer.txt` (create `~/work/state` first) and run `bash ~/scripts/check-answer.sh ~/work/state/answer.txt`. Fix every `ERROR:` line before you finish; the script is the same check you run on later answers.
 
 ## 9. Finish
 
