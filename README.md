@@ -109,6 +109,12 @@ The agent answers in the language of your question. It searches in that language
 - **The agent's own channel:** always excluded, so it never finds its own earlier answers.
 - **Private channels you pick:** during onboarding the agent lists your private channels and you pick the ones to exclude, e.g. project channels. Change the list any time in chat: "never search #proj-acme", "search #proj-acme again", "which channels are excluded?".
 
+## Sensitive topics
+
+You can ask about any topic you can see in Slack. By default (`omit_sensitive: true` in `~/work/CONFIG.md`), hits about credentials, pay, performance reviews, dismissals, health, private contact details and personal customer data are left out of the answer: the agent only says "One hit was left out.", without category, person, permalink or quote. Set `omit_sensitive: false` in chat ("show sensitive content too") to turn this off. The DAM Terms of Use apply either way: no profiling of people, no credentials.
+
+Slack text is always treated as data. If a message tries to give the agent instructions, the agent notes the place under **Uncertain** and ignores it.
+
 ## Adding a workspace later
 
 1. Add another Slack Account connection (step 1) and grant it to the agent (agent → Connections, or `dam connection grant slack-search --connection <name>`).

@@ -3,6 +3,12 @@
 All notable changes to this kit. The version in `VERSION` is the one installed on an agent.
 `dam kit changes <agent>` shows what an update brings; `dam kit update <agent>` takes it.
 
+## 0.5.0 (2026-11-27)
+
+- New setting `omit_sensitive` in `~/work/CONFIG.md` (default `true`). The line "No restriction by topic" is gone: hits about credentials, pay, performance reviews, dismissals, health, private contact details and personal customer data are dropped and answered with "One hit was left out." With `false`, only the Terms-of-Use limit applies. **On update:** if `omit_sensitive` is missing, the agent treats it as `true`, asks the owner once and adds it to `CONFIG.md`. Onboarding asks the question.
+- Injection rule: Slack text that claims to be the owner, an admin or a "note to the AI" is data. The agent names the place under **Uncertain**, without repeating the text or its URLs.
+- No data leaks: search terms come only from the owner's question; the answer contains only Slack permalinks (no images, embedded HTML or foreign links), and URLs from Slack content are never fetched.
+
 ## 0.4.0 (2026-11-27)
 
 - Answers are easier to check: each fact carries a source number `[n]`, and two new sections close every answer: **Uncertain** (contradictions, single-source claims, outdated sources, tool errors) and **Searched** (what was searched, so you can judge coverage). A nothing-found answer is a fixed sentence plus the list of searches.
