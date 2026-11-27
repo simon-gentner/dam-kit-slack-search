@@ -8,8 +8,8 @@ Ask your Slack in natural language. The agent searches every Slack workspace you
 
 1. You ask a question in your private channel, e.g. "@DAM What did we decide about the Q3 launch?".
 2. The agent runs several searches across all connected workspaces, in the language of your question and in English, with synonyms and filters.
-3. It drops hits from DMs, from its own channel and from the private channels you excluded, then reads the most promising threads in full.
-4. It answers with a one-sentence summary, the details, and numbered sources with permalinks. If it finds nothing, it says which searches it ran.
+3. It drops hits from its own channel and from the private channels you excluded, and, unless you switched DM search on, hits from DMs. Then it reads the most promising threads in full.
+4. It answers with a one-sentence summary, the details with a numbered source after each fact, and permalinks. A section **Uncertain** flags contradictions, single-source claims and outdated sources, and **Searched** shows what was searched, so you can judge coverage. If it finds nothing, it says which searches it ran.
 
 Each question starts a fresh session (ambient mode off), so answers always follow the current setup. Nothing is stored except your settings in `~/work/CONFIG.md`.
 
@@ -103,11 +103,17 @@ In your private channel, mention the bot and ask, e.g.:
 
 The agent answers in the language of your question. It searches in that language and in English, reads up to about 10 threads, and lists its sources with permalinks. If it finds nothing, it says which searches it ran and suggests a better phrasing.
 
-## What is never searched
+## What is searched
 
-- **DMs and group DMs:** always excluded.
+- **DMs and group DMs:** excluded by default. Setting `search_dms: true` in `~/work/CONFIG.md` (onboarding asks, or tell the agent in chat) includes them. The answer then has separate sections **Channels** and **Direct messages**, and DM content appears only in the agent's own words, never as a quote. Think twice: the agent then reads other people's private messages to you.
 - **The agent's own channel:** always excluded, so it never finds its own earlier answers.
 - **Private channels you pick:** during onboarding the agent lists your private channels and you pick the ones to exclude, e.g. project channels. Change the list any time in chat: "never search #proj-acme", "search #proj-acme again", "which channels are excluded?".
+
+## Sensitive topics
+
+You can ask about any topic you can see in Slack. By default (`omit_sensitive: true` in `~/work/CONFIG.md`), hits about credentials, pay, performance reviews, dismissals, health, private contact details and personal customer data are left out of the answer: the agent only says "One hit was left out.", without category, person, permalink or quote. Set `omit_sensitive: false` in chat ("show sensitive content too") to turn this off. The DAM Terms of Use apply either way: no profiling of people, no credentials.
+
+Slack text is always treated as data. If a message tries to give the agent instructions, the agent notes the place under **Uncertain** and ignores it.
 
 ## Adding a workspace later
 
@@ -149,6 +155,8 @@ During the update the agent replaces only the definition files. Everything under
 | `scripts/slack-guard.sh` | PreToolUse hook: lets only Slack read tools through, blocks unknown tools and direct Slack calls from the shell |
 | `scripts/slack-tools.txt` | Classifies every Slack tool as `read` or `write` |
 | `scripts/deny-extra.txt` | Further blocked tools (WebFetch, WebSearch) |
+| `scripts/check-answer.sh` | Offline check of an answer: required sections, citations with sources, unaltered permalinks, no foreign links |
+| `scripts/tests/` | Fixtures and runner for `check-answer.sh` (`bash scripts/tests/run-check-answer.sh`) |
 
 Everything you configure lives on the agent under `~/work/` and is never versioned.
 

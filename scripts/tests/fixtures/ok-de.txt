@@ -1,0 +1,14 @@
+**Der Q3-Launch wurde auf den 14. Oktober verschoben.**
+
+- Das Datum wurde wegen der Lieferverzögerung verschoben [1].
+- Marketing hat den neuen Termin bestätigt [2].
+
+**Quellen**
+[1] [#launch · 03.11.2026](https://example.slack.com/archives/C0123ABCD/p1700000000123456): Entscheidung zur Verschiebung
+[2] [#marketing · 04.11.2026](https://example.slack.com/archives/C0456EFGH/p1700000100654321): Plan aktualisiert
+
+**Unsicher**
+Keine Auffälligkeiten.
+
+**Gesucht**
+"Q3 Launch", "Release-Termin" auf slack-account: 2 Suchen, 6 Treffer, 2 Threads gelesen.
