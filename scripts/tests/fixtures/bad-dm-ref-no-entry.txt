@@ -1,0 +1,17 @@
+**The Q3 launch moved to 14 October.**
+
+## Channels
+- The launch date was moved after the vendor delay [1].
+
+## Direct messages
+- Alex told Sam in a one-to-one chat that the new date is final [P2].
+
+**Sources**
+[1] [#launch · 03.11.2026](https://example.slack.com/archives/C0123ABCD/p1700000000123456): decision to move the date
+[P1] DM with Alex · 05.11.2026 · example.slack.com · https://example.slack.com/archives/D0123ABCD/p1700000200111222
+
+**Uncertain**
+No irregularities.
+
+**Searched**
+"Q3 launch" on slack-account: 2 searches, 5 hits, 1 thread read.
