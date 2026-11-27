@@ -30,6 +30,12 @@ for id in $(grep -oE '\[P?[0-9]+\]' "$f" | sort -u); do
   grep -qE "^\\${id%]}\\]" "$f" || err "reference ${id} has no source entry"
 done
 
+# Direct-message citations [Pn] need their own section (never mixed into Channels)
+if grep -qE '\[P[0-9]+\]' "$f"; then
+  grep -qE '^(\*\*|## )(Direct messages|Persönliche Nachrichten)' "$f" \
+    || err "[Pn] cited but there is no Direct messages / Persönliche Nachrichten section"
+fi
+
 # Source entries that are never cited in the text (hint only)
 for id in $(grep -oE '^\[P?[0-9]+\]' "$f" | sort -u); do
   [ "$(grep -oF "$id" "$f" | wc -l)" -ge 2 ] || echo "HINT: ${id} is listed but never cited (ok only as context)"

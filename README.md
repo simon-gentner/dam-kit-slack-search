@@ -8,7 +8,7 @@ Ask your Slack in natural language. The agent searches every Slack workspace you
 
 1. You ask a question in your private channel, e.g. "@DAM What did we decide about the Q3 launch?".
 2. The agent runs several searches across all connected workspaces, in the language of your question and in English, with synonyms and filters.
-3. It drops hits from DMs, from its own channel and from the private channels you excluded, then reads the most promising threads in full.
+3. It drops hits from its own channel and from the private channels you excluded, and, unless you switched DM search on, hits from DMs. Then it reads the most promising threads in full.
 4. It answers with a one-sentence summary, the details with a numbered source after each fact, and permalinks. A section **Uncertain** flags contradictions, single-source claims and outdated sources, and **Searched** shows what was searched, so you can judge coverage. If it finds nothing, it says which searches it ran.
 
 Each question starts a fresh session (ambient mode off), so answers always follow the current setup. Nothing is stored except your settings in `~/work/CONFIG.md`.
@@ -103,9 +103,9 @@ In your private channel, mention the bot and ask, e.g.:
 
 The agent answers in the language of your question. It searches in that language and in English, reads up to about 10 threads, and lists its sources with permalinks. If it finds nothing, it says which searches it ran and suggests a better phrasing.
 
-## What is never searched
+## What is searched
 
-- **DMs and group DMs:** always excluded.
+- **DMs and group DMs:** excluded by default. Setting `search_dms: true` in `~/work/CONFIG.md` (onboarding asks, or tell the agent in chat) includes them. The answer then has separate sections **Channels** and **Direct messages**, and DM content appears only in the agent's own words, never as a quote. Think twice: the agent then reads other people's private messages to you.
 - **The agent's own channel:** always excluded, so it never finds its own earlier answers.
 - **Private channels you pick:** during onboarding the agent lists your private channels and you pick the ones to exclude, e.g. project channels. Change the list any time in chat: "never search #proj-acme", "search #proj-acme again", "which channels are excluded?".
 

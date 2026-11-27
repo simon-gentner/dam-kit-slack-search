@@ -69,7 +69,7 @@ Keep ambient mode off (`--no-ambient`): then every question starts a fresh sessi
 
 ## 6. Private channels to exclude (`exclusions`)
 
-Say first: *DMs and group DMs are never searched, and neither is this channel.*
+Say first: *This channel is never searched. DMs and group DMs are not searched either, unless you switch them on (next question).*
 
 Then, for every server in `## workspaces`, list the owner's private channels with `slack_list_user_channels`: restrict it to private channels if the tool offers a type filter, otherwise keep only the private ones from the result, and follow the `cursor` until the list is complete. Leave out the agent's own channel and sort by name.
 
@@ -85,7 +85,9 @@ Fallback without the tool: a numbered list per workspace, and the owner replies 
 
 ## 7. Write `~/work/CONFIG.md`
 
-**First, ask about sensitive content** (part of the `exclusions` step) with `AskUserQuestion`: *"Should I leave sensitive content out of answers (credentials, pay, performance reviews, dismissals, health, private contact details, personal customer data)?"* Options: **"Yes, leave it out" (Recommended)** → `omit_sensitive: true`; **"No, show it"** → `omit_sensitive: false`. Say that with "No" only the DAM Terms of Use apply, and that the owner can change it any time in chat.
+**Ask about DMs first** (also part of the `exclusions` step) with `AskUserQuestion`: *"Should I also search your DMs and group DMs? Then I read other people's private messages to you, and the answer shows them only in my own words, never as quotes."* Options: **"No, channels only" (Recommended)** → `search_dms: false`; **"Yes, include DMs"** → `search_dms: true`. Say that the owner can change it any time in chat. Only when the answer is yes, point out that excluded channels also apply to group DMs.
+
+**Then ask about sensitive content** (part of the `exclusions` step) with `AskUserQuestion`: *"Should I leave sensitive content out of answers (credentials, pay, performance reviews, dismissals, health, private contact details, personal customer data)?"* Options: **"Yes, leave it out" (Recommended)** → `omit_sensitive: true`; **"No, show it"** → `omit_sensitive: false`. Say that with "No" only the DAM Terms of Use apply, and that the owner can change it any time in chat.
 
 Exactly in this shape (values are examples):
 
@@ -96,6 +98,7 @@ Exactly in this shape (values are examples):
 - owner_slack_user_id: U0123ABCD
 - language: auto
 - omit_sensitive: true
+- search_dms: false
 - channel_id: C0123ABCD
 
 ## workspaces

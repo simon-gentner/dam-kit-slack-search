@@ -3,6 +3,11 @@
 All notable changes to this kit. The version in `VERSION` is the one installed on an agent.
 `dam kit changes <agent>` shows what an update brings; `dam kit update <agent>` takes it.
 
+## 0.6.0 (2026-11-27)
+
+- New setting `search_dms` in `~/work/CONFIG.md` (default `false`). Off, nothing changes: DMs and group DMs are never searched. On, the agent also searches DMs and group DMs, keeps channel and DM hits in separate answer sections with their own sources (`[n]` and `[Pn]`), quotes only from channels (at most 15 words), reports DM content in its own words, and does not conclude anything from group-DM threads it cannot fully read. **On update:** if `search_dms` is missing, the agent treats it as `false`, asks the owner once and adds it to `CONFIG.md`. Onboarding asks the question.
+- `check-answer.sh` requires a **Direct messages** section whenever an answer cites `[Pn]`.
+
 ## 0.5.0 (2026-11-27)
 
 - New setting `omit_sensitive` in `~/work/CONFIG.md` (default `true`). The line "No restriction by topic" is gone: hits about credentials, pay, performance reviews, dismissals, health, private contact details and personal customer data are dropped and answered with "One hit was left out." With `false`, only the Terms-of-Use limit applies. **On update:** if `omit_sensitive` is missing, the agent treats it as `true`, asks the owner once and adds it to `CONFIG.md`. Onboarding asks the question.
