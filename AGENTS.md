@@ -87,7 +87,8 @@ Standard Markdown (not Slack mrkdwn): `**bold**`, links as `[text](url)`. Transl
 - Every statement must be backed by a source: each fact carries `[n]`, and each `[n]` has an entry under **Sources**. A source that only gave context is marked "(context)".
 - Permalinks: preferably the permalink from the search result, copied as a whole and never retyped or reformatted. Otherwise `<permalink_base>/archives/<channel ID>/p<ts without the dot>` with the server's `permalink_base`. Never guess a domain.
 - Use "always", "everywhere", "all" only when at least three independent sources support it. Otherwise write "in the examples found".
-- Self-check: before sending, save the answer to a file and run `bash ~/scripts/check-answer.sh <file>` when you can run shell commands. Fix every `ERROR:` line.
+- **Headings:** in German use exactly **Quellen**, **Unsicher**, **Gesucht**; in English **Sources**, **Uncertain**, **Searched**. `check-answer.sh` knows only these two languages. In any other language, translate the headings as you like and ignore its "missing section" errors; every other check still applies.
+- Self-check: before sending, save the answer to `~/work/state/answer.txt` (never outside `~/work`) and run `bash ~/scripts/check-answer.sh ~/work/state/answer.txt` when you can run shell commands. Fix every `ERROR:` line.
 
 ## Hard rules
 

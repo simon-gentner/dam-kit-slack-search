@@ -5,6 +5,7 @@
 f="${1:?usage: check-answer.sh <answer.txt>}"
 [ -r "$f" ] || { echo "ERROR: cannot read $f"; exit 1; }
 bad=0
+set -f   # [1] and [P1] are glob patterns: never expand them against files in the current directory
 err() { echo "ERROR: $*"; bad=1; }
 
 # Required sections (heading in the answer language)
@@ -22,6 +23,7 @@ esac
 # Permalinks: timestamp is p + exactly 16 digits, no dot
 while read -r u; do
   ts="${u##*/p}"
+  while [[ "$ts" == *. ]]; do ts="${ts%.}"; done   # a sentence-final full stop is not part of the link
   [[ "$ts" =~ ^[0-9]{16}$ ]] || err "altered permalink: $u"
 done < <(grep -oE 'https://[a-zA-Z0-9.-]*slack\.com/archives/[A-Z0-9]+/p[0-9.]+' "$f" | sort -u)
 
