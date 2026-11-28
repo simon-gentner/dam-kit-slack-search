@@ -85,6 +85,8 @@ Fallback without the tool: a numbered list per workspace, and the owner replies 
 
 ## 7. Write `~/work/CONFIG.md`
 
+**First, ask about sensitive content** (part of the `exclusions` step) with `AskUserQuestion`: *"Should I leave sensitive content out of answers (credentials, pay, performance reviews, dismissals, health, private contact details, personal customer data)?"* Options: **"Yes, leave it out" (Recommended)** → `omit_sensitive: true`; **"No, show it"** → `omit_sensitive: false`. Say that with "No" only the DAM Terms of Use apply, and that the owner can change it any time in chat.
+
 Exactly in this shape (values are examples):
 
 ```markdown
@@ -93,6 +95,7 @@ Exactly in this shape (values are examples):
 - owner_name: Jane Doe
 - owner_slack_user_id: U0123ABCD
 - language: auto
+- omit_sensitive: true
 - channel_id: C0123ABCD
 
 ## workspaces
@@ -116,7 +119,7 @@ Show the file to the owner.
 
 ## 8. Test search (`test`)
 
-Ask the owner for a term they are sure to find in Slack, and answer the question once in full per [`AGENTS.md`](AGENTS.md), with sources from all workspaces.
+Ask the owner for a term they are sure to find in Slack, and answer the question once in full per [`AGENTS.md`](AGENTS.md), with sources from all workspaces. Then save that answer to `~/work/state/answer.txt` (create `~/work/state` first) and run `bash ~/scripts/check-answer.sh ~/work/state/answer.txt`. Fix every `ERROR:` line before you finish; the script is the same check you run on later answers.
 
 ## 9. Finish
 
