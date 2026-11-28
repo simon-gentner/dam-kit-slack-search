@@ -1,0 +1,15 @@
+**The Q3 launch moved to 14 October.**
+
+![x](https://example.slack.com/a.png)
+- The launch date was moved from 30 September to 14 October after the vendor delay [1].
+- Marketing confirmed the new date and updated the plan [2].
+
+**Sources**
+[1] [#launch · 03.11.2026](https://example.slack.com/archives/C0123ABCD/p1700000000123456): decision to move the date
+[2] [#marketing · 04.11.2026](https://example.slack.com/archives/C0456EFGH/p1700000100654321): plan updated
+
+**Uncertain**
+No irregularities.
+
+**Searched**
+"Q3 launch", "launch date", "Release-Termin" on server slack-account: 3 searches, 9 hits, 2 threads read.

@@ -9,7 +9,7 @@ Ask your Slack in natural language. The agent searches every Slack workspace you
 1. You ask a question in your private channel, e.g. "@DAM What did we decide about the Q3 launch?".
 2. The agent runs several searches across all connected workspaces, in the language of your question and in English, with synonyms and filters.
 3. It drops hits from DMs, from its own channel and from the private channels you excluded, then reads the most promising threads in full.
-4. It answers with a one-sentence summary, the details, and numbered sources with permalinks. If it finds nothing, it says which searches it ran.
+4. It answers with a one-sentence summary, the details with a numbered source after each fact, and permalinks. A section **Uncertain** flags contradictions, single-source claims and outdated sources, and **Searched** shows what was searched, so you can judge coverage. If it finds nothing, it says which searches it ran.
 
 Each question starts a fresh session (ambient mode off), so answers always follow the current setup. Nothing is stored except your settings in `~/work/CONFIG.md`.
 
@@ -149,6 +149,8 @@ During the update the agent replaces only the definition files. Everything under
 | `scripts/slack-guard.sh` | PreToolUse hook: lets only Slack read tools through, blocks unknown tools and direct Slack calls from the shell |
 | `scripts/slack-tools.txt` | Classifies every Slack tool as `read` or `write` |
 | `scripts/deny-extra.txt` | Further blocked tools (WebFetch, WebSearch) |
+| `scripts/check-answer.sh` | Offline check of an answer: required sections, citations with sources, unaltered permalinks, no foreign links |
+| `scripts/tests/` | Fixtures and runner for `check-answer.sh` (`bash scripts/tests/run-check-answer.sh`) |
 
 Everything you configure lives on the agent under `~/work/` and is never versioned.
 

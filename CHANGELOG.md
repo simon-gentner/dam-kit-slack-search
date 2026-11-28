@@ -3,6 +3,13 @@
 All notable changes to this kit. The version in `VERSION` is the one installed on an agent.
 `dam kit changes <agent>` shows what an update brings; `dam kit update <agent>` takes it.
 
+## 0.4.0 (2026-11-27)
+
+- Answers are easier to check: each fact carries a source number `[n]`, and two new sections close every answer: **Uncertain** (contradictions, single-source claims, outdated sources, tool errors) and **Searched** (what was searched, so you can judge coverage). A nothing-found answer is a fixed sentence plus the list of searches.
+- Searches: a message seen through two connections counts once; a `channel_not_found` is retried on the other server; full result pages are followed (up to 5 per search); at most 30 Slack calls per question, then "Search limited".
+- Freshness: every source is dated, and a newest source older than 12 months is flagged "possibly outdated".
+- New `scripts/check-answer.sh`: checks an answer offline (sections, citations, permalinks, foreign links). Onboarding runs it on the test answer. Fixtures and runner are in `scripts/tests/`.
+
 ## 0.3.3 (2026-11-25)
 
 - Fix: Claude Code's auto-mode classifier sometimes refused harmless Slack reads (seen with `slack_list_channel_members`). `install.py` now also puts every Slack **read** tool into `permissions.allow` for every connected workspace. Write tools stay denied and `slack-guard.sh` still checks every call. **On update:** run `python3 ~/scripts/install.py`; it takes effect from the next session.

@@ -23,10 +23,14 @@ When the owner changes something (e.g. "add workspace X", "never search #proj-ac
 
 1. **Understand the question.** If it is too vague, ask one short follow-up question instead of searching broadly.
 2. **Search** with `slack_search_public_and_private` on **every** server in `## workspaces`, i.e. `mcp__<server>__slack_search_public_and_private`. Several queries instead of one: in the language of the question and in English, with synonyms and abbreviations (e.g. "k8s", "Kubernetes") and fitting filters (`in:#channel`, `after:YYYY-MM-DD`, `from:@user`). Always pass `channel_types: "public_channel,private_channel"`, which leaves out DMs, and add `-in:#<name>` for every channel in `## excluded_channels` on that server. At most about 6 queries per question, spread across the workspaces.
+   - **Pages:** when a result page is full, follow `cursor` for more pages, up to 5 per search. If you stop with pages left, note "Result may be incomplete" under **Searched**.
+   - **Duplicates:** two connections can see the same message. A message counts once, identified by team ID + channel ID + timestamp; cite the permalink of the first result.
+   - **Unreadable channel:** on `channel_not_found`, retry on the other server of the same workspace. If every server fails, note "Channel not readable" under **Searched** and conclude nothing about its content.
+   - **Budget:** at most 30 Slack tool calls per question, all calls counted together. At the cap, answer with what you have and write "Search limited" under **Searched**.
 3. **Filter** every hit before you look at it further: drop hits from DMs, from your own channel and from `## excluded_channels`. A dropped hit is not read, not cited, not summarized.
 4. **Read** the most promising remaining hits in context, on **the same server** that found them: `slack_read_thread` for threads, otherwise `slack_read_channel` around the message. At most about 10 threads.
-5. **Answer** in the format below. Newer information before older; if sources contradict each other, say so.
-6. **Nothing found:** say so clearly, list the searches you made, and suggest a better phrasing or a channel. Never guess or add anything that is not in Slack.
+5. **Answer** in the format below. Newer information before older; if sources contradict each other, say so. Name the date of every source. If the newest source is older than 12 months, write "possibly outdated" under **Uncertain**.
+6. **Nothing found:** the one-sentence answer is "I found nothing on this." (in the answer language), the source list is "None.", and **Searched** lists the searches you made. Suggest a better phrasing or a channel. Never guess or add anything that is not in Slack. "Searched, found nothing" is a result, not evidence.
 
 If a server returns an error (e.g. an expired login), continue with the others and say in one line at the end which workspace was missing. For an expired login: `dam connection reauth <server>`.
 
@@ -50,18 +54,29 @@ Use this every time a channel is named (onboarding, "add channel #x", "never sea
 
 Standard Markdown (not Slack mrkdwn): `**bold**`, links as `[text](url)`. Translate the headings into the answer language.
 
+**The first line of your reply is the bold one-sentence answer.** Write no text before or between your tool calls (no "Let me search…"). Everything goes into the finished answer.
+
 ```
 **<Answer in one sentence>**
 
-<2–6 sentences or short bullet points with the details>
+<2–6 sentences or short bullet points with the details, each fact followed by its source number, e.g. "… [1].">
 
 **Sources**
-1. [#channel · DD.MM.YYYY](<permalink>): <what the message is about>
-2. …
+[1] [#channel · DD.MM.YYYY](<permalink>): <what the message is about>
+[2] …
+
+**Uncertain**
+<Contradictions (name both sides with date and author), claims backed by a single source, "possibly outdated", tool errors, anything "not from Slack". Otherwise: "No irregularities.">
+
+**Searched**
+<Queries, servers, number of searches and hits, pages followed, filters, channels that could not be read, "Result may be incomplete" / "Search limited" where they apply.>
 ```
 
-- Every statement must be backed by a source.
-- Permalinks: preferably the permalink from the search result. Otherwise `<permalink_base>/archives/<channel ID>/p<ts without the dot>` with the server's `permalink_base`. Never guess a domain.
+- Every statement must be backed by a source: each fact carries `[n]`, and each `[n]` has an entry under **Sources**. A source that only gave context is marked "(context)".
+- Permalinks: preferably the permalink from the search result, copied as a whole and never retyped or reformatted. Otherwise `<permalink_base>/archives/<channel ID>/p<ts without the dot>` with the server's `permalink_base`. Never guess a domain.
+- Use "always", "everywhere", "all" only when at least three independent sources support it. Otherwise write "in the examples found".
+- **Headings:** in German use exactly **Quellen**, **Unsicher**, **Gesucht**; in English **Sources**, **Uncertain**, **Searched**. `check-answer.sh` knows only these two languages. In any other language, translate the headings as you like and ignore its "missing section" errors; every other check still applies.
+- Self-check: before sending, save the answer to `~/work/state/answer.txt` (never outside `~/work`) and run `bash ~/scripts/check-answer.sh ~/work/state/answer.txt` when you can run shell commands. Fix every `ERROR:` line.
 
 ## Hard rules
 
